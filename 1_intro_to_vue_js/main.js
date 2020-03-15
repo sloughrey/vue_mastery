@@ -33,8 +33,8 @@ Vue.component('product', {
                     :class="{ disabledButton: !inStock }">Add to cart</button></div>
                     <div>
                         <button v-on:click="removeFromCart"
-                        :disabled="inventory <= 0">Remove from cart</button></div>
-                    <div class="cart">Cart({{ cart }})</div>
+                        :disabled="inventory <= 0">Remove from cart</button>
+                    </div>
                 </div>
             </div>
 
@@ -78,7 +78,6 @@ Vue.component('product', {
                     variantOnSale: true,
                 }
             ],
-            cart: 0,
         }
     },
     methods: {
@@ -86,13 +85,13 @@ Vue.component('product', {
             return this.variants[this.selectedVariant];
         },
         addToCart: function() { // uses es5 non-shorthand function declaration
-            this.cart += 1; // refers to data.cart
+            this.$emit('add-to-cart', this.getSelectedVariant().variantId); // registers an event called add-to-cart for the parent to listen to
         },
         updateProduct(index) { // uses new es6 shorthand function declaration
             this.selectedVariant = index;
         },
         removeFromCart: function() { // uses es5 non-shorthand function declaration
-            this.cart -= 1; // refers to data.cart
+            this.$emit('remove-from-cart', this.getSelectedVariant().variantId); // registers an event called remove-from-cart for the parent to listen to
         },
         isOnSale() {
             return this.getSelectedVariant().variantOnSale;
@@ -127,6 +126,7 @@ Vue.component('product', {
     }
 });
 
+// component used to render the product details
 Vue.component('productDetails', {
     props: {
         details: {
@@ -146,5 +146,20 @@ var app = new Vue({
     el: '#app',
     data: {
         premium: true,
+        cart: [],
+    },
+    methods: {
+        updateCart(id) {
+            this.cart.push(id);
+        },
+        removeFromCart(id) {
+            for(i=0; i<this.cart.length; i++) {
+                let productId = this.cart[i];
+                if (productId == id) {
+                    this.cart.splice(i, 1);
+                    return;
+                }
+            }
+        }
     }
 });
