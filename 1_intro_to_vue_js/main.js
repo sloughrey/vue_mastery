@@ -63,7 +63,7 @@ Vue.component('product', {
             product: 'Socks',
             selectedVariant: 0,
             productLink: "/product/1",
-            inventory: 7,
+            inventory: 0,
             details: ["80% cotton", "20% polyester", "Gender-neutral"],
             sizes: ["small", "medium", "large"],
             variants: [
@@ -206,15 +206,18 @@ Vue.component('product-review', {
                     recommend: this.recommend,
                 }
                 eventBus.$emit('review-submitted', productReview);
-                this.name = null;
-                this.review = null;
-                this.rating = null;
+                this.resetReviewForm();
             } else {
                 if (!this.name) this.errors.push("Name required.");
                 if (!this.review) this.errors.push("Review required.");
                 if (!this.rating) this.errors.push("Rating required.");
                 if (!this.recommend) this.errors.push("Recommend required.");
             }
+        },
+        resetReviewForm() {
+            this.name = null;
+            this.review = null;
+            this.rating = null;
         }
     }
 });
